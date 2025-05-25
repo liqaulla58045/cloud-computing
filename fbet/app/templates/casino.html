@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Casino{% endblock %}
+
+{% block content %}
+<h1>Casino Games</h1>
+
+{% if games %}
+<div class="games-container">
+    {% for game in games %}
+    <div class="game-card">
+        <div class="game-info">
+            <h3>{{ game.name }}</h3>
+            <p>{{ game.description }}</p>
+            <p>Min Bet: ${{ game.min_bet }} | Max Bet: ${{ game.max_bet }}</p>
+        </div>
+        <form method="POST" action="{{ url_for('main.casino') }}" class="bet-form">
+            {{ form.csrf_token }}
+            <input type="hidden" name="game_id" value="{{ game.id }}">
+            <input type="number" name="amount" step="0.01" min="{{ game.min_bet }}" max="{{ game.max_bet }}" placeholder="Amount" required class="bet-amount">
+            <button type="submit" class="btn-place-bet">Place Bet</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<h2>Your Casino Bets</h2>
+{% if user_bets %}
+<div class="user-bets-container">
+    {% for bet in user_bets %}
+    <div class="bet-card">
+        <h4>{{ bet.game.name }}</h4>
+        <p>Amount: ${{ '%.2f' % bet.amount }}</p>
+        <p>Result: 
+            {% if bet.result == 'win' %}
+                <span class="result-win">Win</span>
+            {% elif bet.result == 'lose' %}
+                <span class="result-lose">Lose</span>
+            {% else %}
+                <span class="result-pending">Pending</span>
+            {% endif %}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>You have not placed any casino bets yet.</p>
+{% endif %}
+{% else %}
+<p>No casino games available at the moment.</p>
+{% endif %}
+{% endblock %}

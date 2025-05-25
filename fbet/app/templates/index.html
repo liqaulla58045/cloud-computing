@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <h1>Welcome to FBET</h1>
+    <p>Your premier sports betting and casino platform.</p>
+    <a href="{{ url_for('auth.register') }}" class="btn-cta">Get Started Now</a>
+  </div>
+</section>
+
+<section class="features">
+  <div class="feature-card">
+    <h2>Sports Betting</h2>
+    <p>Real-time odds, matches, and bet slips for your favorite sports.</p>
+    <a href="{{ url_for('main.sports') }}" class="feature-btn">Go to Sports</a>
+  </div>
+  <div class="feature-card">
+    <h2>Casino Games</h2>
+    <p>Enjoy a variety of casino games with upcoming real game provider integrations.</p>
+    <a href="{{ url_for('main.casino') }}" class="feature-btn">Go to Casino</a>
+  </div>
+  <div class="feature-card">
+    <h2>Crypto & Fiat Wallet</h2>
+    <p>Secure deposits, withdrawals, and balance management with crypto support.</p>
+    <a href="{{ url_for('main.wallet') }}" class="feature-btn">Go to Wallet</a>
+  </div>
+  <div class="feature-card">
+    <h2>User System</h2>
+    <p>Sign up, login, profile management, and KYC support for your security.</p>
+    <a href="{{ url_for('auth.register') }}" class="feature-btn">Register Now</a>
+  </div>
+</section>
+{% endblock %}

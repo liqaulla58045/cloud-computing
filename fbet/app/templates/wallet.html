@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Wallet{% endblock %}
+
+{% block content %}
+<h1>Crypto & Fiat Wallet</h1>
+
+<h2>Balance: ${{ '%.2f' % wallet.balance }}</h2>
+
+<div class="wallet-forms">
+    <div class="wallet-card deposit-form">
+        <h3>Deposit Money</h3>
+        <form method="POST" action="{{ url_for('main.wallet') }}">
+            {{ deposit_form.hidden_tag() }}
+            {{ deposit_form.amount.label }}<br>
+            {{ deposit_form.amount(class="input-amount") }}<br>
+            {% for error in deposit_form.amount.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+            <br>
+            {{ deposit_form.submit(class="btn-submit") }}
+        </form>
+    </div>
+
+    <div class="wallet-card withdraw-form">
+        <h3>Withdraw Money</h3>
+        <form method="POST" action="{{ url_for('main.wallet') }}">
+            {{ withdraw_form.hidden_tag() }}
+            {{ withdraw_form.amount.label }}<br>
+            {{ withdraw_form.amount(class="input-amount") }}<br>
+            {% for error in withdraw_form.amount.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+            <br>
+            {{ withdraw_form.submit(class="btn-submit") }}
+        </form>
+    </div>
+</div>
+
+<h3>Transaction History</h3>
+<table class="transaction-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for txn in transactions %}
+        <tr>
+            <td>{{ txn.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ txn.transaction_type }}</td>
+            <td>
+                {% if txn.amount < 0 %}
+                    -${{ (-txn.amount)|round(2) }}
+                {% else %}
+                    ${{ txn.amount|round(2) }}
+                {% endif %}
+            </td>
+            <td>{{ txn.description }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">No transactions found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
