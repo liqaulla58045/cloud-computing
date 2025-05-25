@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Sports{% endblock %}
+
+{% block content %}
+<h1>Sports Betting</h1>
+
+{% if games %}
+<div class="games-container">
+    {% for game in games %}
+    <div class="game-card">
+        <div class="game-info">
+            <h3>{{ game.team_home }} vs {{ game.team_away }}</h3>
+            <p>Start Time: {{ game.start_time.strftime('%Y-%m-%d %H:%M') }}</p>
+            <div class="odds">
+                <span>Home Win: {{ game.odds_home_win }}</span>
+                <span>Draw: {{ game.odds_draw }}</span>
+                <span>Away Win: {{ game.odds_away_win }}</span>
+            </div>
+        </div>
+        <form method="POST" action="{{ url_for('main.sports') }}" class="bet-form">
+            {{ form.csrf_token }}
+            <input type="hidden" name="game_id" value="{{ game.id }}">
+            <select name="bet_type" required aria-label="Bet Type" class="bet-select">
+                <option value="" disabled selected>Select Bet</option>
+                <option value="home_win">Home Win</option>
+                <option value="draw">Draw</option>
+                <option value="away_win">Away Win</option>
+            </select>
+            <input type="number" name="amount" step="0.01" min="0.01" placeholder="Amount" required aria-label="Bet Amount" class="bet-amount">
+            <button type="submit" class="btn-place-bet">Place Bet</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<h2>Your Bets</h2>
+{% if user_bets %}
+<div class="user-bets-container">
+    {% for bet in user_bets %}
+    <div class="bet-card">
+        <h4>{{ bet.game.team_home }} vs {{ bet.game.team_away }}</h4>
+        <p>Bet Type: {{ bet.bet_type }}</p>
+        <p>Amount: ${{ '%.2f' % bet.amount }}</p>
+        <p>Result: 
+            {% if bet.result == 'win' %}
+                <span class="result-win">Win</span>
+            {% elif bet.result == 'lose' %}
+                <span class="result-lose">Lose</span>
+            {% else %}
+                <span class="result-pending">Pending</span>
+            {% endif %}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>You have not placed any bets yet.</p>
+{% endif %}
+{% else %}
+<p>No games available at the moment.</p>
+{% endif %}
+{% endblock %}
